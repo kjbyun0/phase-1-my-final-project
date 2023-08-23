@@ -1,0 +1,8 @@
+#heart {
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.activated-heart {
+    color: red;
+}
