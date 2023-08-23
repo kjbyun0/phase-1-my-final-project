@@ -1,6 +1,81 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color:ivory;
+}
+
+.row {
+    width: 100%;
+    background-color: rgb(196, 196, 196);
+}
+
+.column {
+    float: left;
+    padding: 10px 5px 10px;
+    height: 650px;
+    overflow: auto;
+    color: black;
+}
+
+.column-left {
+    width: 40%;
+}
+
+.column-right {
+    width: 60%;
+}
+
+.row:after {
+    content:"";
+    display: table;
+    clear: both;
+}
+
+h1 {
+    margin: 15px 0 15px;
+}
+
+h4 {
+    margin: 5px 0 5px;
+}
+
+ul {
+    padding: 0px 0px 0px 20px;
+    margin: 5px 0 5px;
+}
+
+.img-thumbnail {
+    vertical-align: middle;
+    margin: 0px 5px 2px 0px;
+}
+
+.btn-delete-favorite {
+    margin: 0px 0px 0px 5px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.component {
+    padding: 5px;
+    margin: 0px;
+    background-color: rgb(211, 211, 211);
+    border-radius: 10px;
+}
+
+.meal-list {
+    min-height: 228px;
+}
+
+#display-meal-desc {
+    min-height: 602px;
+}
+
 #heart {
     font-size: 1.5em;
-    cursor: pointer;
 }
 
 .activated-heart {

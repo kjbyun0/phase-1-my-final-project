@@ -7,41 +7,40 @@
         <script defer type="text/javascript" src="./index.js"></script>
     </head>
     <body>
-        <div>
-            <header>
-                <h1>What would you like to make for today's meal?</h1>
-            </header>
-            <form id="search-meals">
+        <header>
+            <h1>What would you like to eat today?</h1>
+        </header>
+        <div class="row">
+            <div class="column column-left">
                 <h4>Search for your favorite meals!</h4>
-                <div id="search-conditions">
+                <div class="component">
+                    <form id="search-meals">
+                        <div id="search-conditions">
+                        </div>
+                        <input type="submit" value="Search" />
+                    </form>
                 </div>
-                <input type="submit" value="Search" />
-            </form>
-        </div>
+                <br>
 
-        <div id="display-searched-meals">
-            <header>
                 <h4>Meals found: </h1>
-            </header>
-            <ul id="searched-meal-list">
-            </ul>
-        </div>
+                <div class="component meal-list">
+                    <ul id="searched-meal-list">
+                    </ul>
+                </div>
+                <br>
 
-        <div id="display-favorite-meals">
-            <header>
-                <h4>My Favorite Meals: </h4>
-            </header>
-            <ul id="favorite-meals">
-            </ul>
-        </div>
+                <h4>My favorite meals: </h4>
+                <div class="component meal-list">
+                    <ul id="favorite-meals">
+                    </ul>
+                </div>
+            </div>
 
-        <div>
-            <header>
-                <h4>Selected Meal Description: </h4>
-            </header>
-            <div id="display-meal-desc">
+            <div class="column column-right">
+                <h4>Description of the selected meal : </h4>
+                <div id="display-meal-desc" class="component">
+                </div>
             </div>
         </div>
-
     </body>
 </html>

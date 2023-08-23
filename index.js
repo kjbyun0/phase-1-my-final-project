@@ -204,13 +204,15 @@ function displaySearchedMeals() {
         const imgMeal = document.createElement('img');
         imgMeal.src = objMeal.strMealThumb;
         imgMeal.alt = objMeal.strMeal;
-        imgMeal.width = '80';
-        imgMeal.height = '80';
+        imgMeal.width = '30';
+        imgMeal.height = '30';
+        imgMeal.classList.add('img-thumbnail');
 
         const liMeal = document.createElement('li');
         liMeal.appendChild(imgMeal);
         // console.log('liMeal', liMeal, liMeal.innerHTML);
         liMeal.innerHTML = `${liMeal.innerHTML} ${objMeal.strMeal}`;
+        liMeal.classList.add('pointer');
 
         // const arrFavoriteMealsId = arrFavoriteMeals.map(objMeal => objMeal.id);
         // const stFavoriteMealsId = new Set(arrFavoriteMealsId);
@@ -232,6 +234,11 @@ function displayMealDesc(id, bFromFavorites) {
         imgMeal.alt = objMealDesc.strMeal;
         imgMeal.width = '300';
         imgMeal.height = '300';
+
+        //bkj - newly added
+        imgMeal.style.display = 'block';
+        imgMeal.style.marginLeft = 'auto';
+        imgMeal.style.marginRight = 'auto';
         
         const ulMealDesc = document.createElement('ul');
         const liStrMeal = document.createElement('li');
@@ -260,6 +267,7 @@ function displayMealDesc(id, bFromFavorites) {
         const spHeart = document.createElement('span');
         //spHeart.classList.add('heart');
         spHeart.id = 'heart';
+        spHeart.classList.add('pointer');
 
         if (bFromFavorites) {
             spHeart.textContent = FULL_HEART;
@@ -374,8 +382,9 @@ function displayFavoriteMeals() {
         const imgMeal = document.createElement('img');
         imgMeal.src = objMeal.strMealThumb;
         imgMeal.alt = objMeal.strMeal;
-        imgMeal.width = '80';
-        imgMeal.height = '80';
+        imgMeal.width = '30';
+        imgMeal.height = '30';
+        imgMeal.classList.add('img-thumbnail');
         imgMeal.addEventListener('click',  e => displayMealDesc(objMeal.id, true));
 
         const spStrMeal = document.createElement('span');
@@ -385,11 +394,11 @@ function displayFavoriteMeals() {
         const btnDelete = document.createElement('button');
         btnDelete.type = 'button'
         btnDelete.textContent = 'X';
+        btnDelete.classList.add('btn-delete-favorite');
         btnDelete.addEventListener('click', e => {
             // If the meal description displays a meal deleted from favorite meals, update its heart in the meal description
             const liStrMeal = document.getElementById('display-meal-desc-strmeal');
-            const strMeal = liStrMeal.textContent.slice(6); 
-            if (strMeal === objMeal.strMeal) {
+            if (liStrMeal !== null && liStrMeal.textContent.slice(6) === objMeal.strMeal) {
                 const spHeart = document.getElementById('heart');
                 spHeart.textContent = EMPTY_HEART;
                 spHeart.classList.remove('activated-heart');
@@ -398,6 +407,7 @@ function displayFavoriteMeals() {
         });
 
         const liMeal = document.createElement('li');
+        liMeal.classList.add('pointer');
         liMeal.append(imgMeal, spStrMeal, btnDelete);
         ulMeals.appendChild(liMeal);
     });
