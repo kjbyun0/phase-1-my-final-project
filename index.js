@@ -2,17 +2,37 @@
 const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
-let condCnt = 0;
+let condCnt = 0;    // Number of search elements added.
 const arrConditions = [];
 const arrSearchedMeals = [];    // Think about a way to delete it.
 const arrFavoriteMeals = [];    // Think about a way to delete it.
 const arrConditionDL = [];      // 0: Meal Category, 1: Area, 2: ingredients
 
-fetchConditions();
-addConditionElement();
+fetchSearchConditions();
+addSearchElements();
 fetchFavoriteMeals();
 
-function fetchConditions() {
+document.getElementById('search-meals').addEventListener('submit', e => {
+    e.preventDefault();
+
+    arrConditions.length = 0;
+    for (let i = 0; i < condCnt; i++) {
+        const sltTag = document.getElementById(`select${i}`);
+        const inputTag = document.getElementById(`input${i}`);
+        arrConditions.push({select: sltTag.value, input: inputTag.value});
+    }
+    // console.log(arrConditions);
+
+    arrSearchedMeals.length = 0;
+    searchMeals(arrConditions.length - 1);
+
+    // initialzing search html elements
+    document.getElementById('search-conditions').innerHTML = '';
+    condCnt = 0;
+    addSearchElements();
+});
+
+function fetchSearchConditions() {
     // fetching meal category data list
     fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list')
     .then(resp => resp.json())
@@ -40,7 +60,7 @@ function fetchConditions() {
     // console.log('arrConditionDL', arrConditionDL);
 }
 
-function addConditionElement() {
+function addSearchElements() {
     const sltTag = document.createElement('select');
     sltTag.id = `select${condCnt}`;
     const optTag1 = document.createElement('option');
@@ -74,20 +94,16 @@ function addConditionElement() {
     const btnTag = document.createElement('button');
     btnTag.type = 'button';
     btnTag.textContent = '+';
-    btnTag.addEventListener('click', addConditionElement);
+    btnTag.addEventListener('click', addSearchElements);
 
     const brTag = document.createElement('br');
 
     const divTag = document.getElementById('search-conditions');
-    // console.log(frmTag.children);
     divTag.append(sltTag, inputTag, dlTag, btnTag, brTag);
     condCnt++;
 }
 
-//test
 function mkDataList(e) {
-    //console.log("mkDataList() is called!!!", e);
-
     const condNum = e.target.id.slice(6);
     //console.log('condNum', condNum);
     const dlTag = document.getElementById(`datalist${condNum}`);
@@ -100,31 +116,8 @@ function mkDataList(e) {
     });
 }
 
-
-document.getElementById('search-meals').addEventListener('submit', e => {
-    e.preventDefault();
-
-    arrConditions.length = 0;
-    for (let i = 0; i < condCnt; i++) {
-        const sltTag = document.getElementById(`select${i}`);
-        const inputTag = document.getElementById(`input${i}`);
-        arrConditions.push({select: sltTag.value, input: inputTag.value});
-    }
-    // console.log(arrConditions);
-
-    arrSearchedMeals.length = 0;
-    searchMeals(arrConditions.length - 1);
-
-    // e.target.reset();
-
-    document.getElementById('search-conditions').innerHTML = '';
-    condCnt = 0;
-    addConditionElement();
-});
-
 function searchMeals(idxConditions) {
     // console.log('idxConditions', idxConditions);
-
     if (idxConditions < 0) {
         // console.log('arrSearchedMeals: ', arrSearchedMeals);
         displaySearchedMeals();
@@ -214,9 +207,6 @@ function displaySearchedMeals() {
         liMeal.innerHTML = `${liMeal.innerHTML} ${objMeal.strMeal}`;
         liMeal.classList.add('pointer');
 
-        // const arrFavoriteMealsId = arrFavoriteMeals.map(objMeal => objMeal.id);
-        // const stFavoriteMealsId = new Set(arrFavoriteMealsId);
-        // liMeal.addEventListener('click', e => displayMealDesc(objMeal.idMeal, stFavoriteMealsId.has(objMeal.idMeal)));
         liMeal.addEventListener('click', e => displayMealDesc(objMeal.idMeal, false));
         ulMeals.appendChild(liMeal);
     });
@@ -234,8 +224,6 @@ function displayMealDesc(id, bFromFavorites) {
         imgMeal.alt = objMealDesc.strMeal;
         imgMeal.width = '300';
         imgMeal.height = '300';
-
-        //bkj - newly added
         imgMeal.style.display = 'block';
         imgMeal.style.marginLeft = 'auto';
         imgMeal.style.marginRight = 'auto';
@@ -266,9 +254,7 @@ function displayMealDesc(id, bFromFavorites) {
         const ftFavorite = document.createElement('footer');
         const ulFavorite = document.createElement('ul');
         const liFavorite = document.createElement('li');
-        //const pFavorite = document.createElement('p');
         const spHeart = document.createElement('span');
-        //spHeart.classList.add('heart');
         spHeart.id = 'heart';
         spHeart.classList.add('pointer');
 
@@ -284,7 +270,7 @@ function displayMealDesc(id, bFromFavorites) {
                 spHeart.textContent = EMPTY_HEART;
             }
         }
-        // spHeart.addEventListener('click', e => updateFavoriteMeals(e, objMealDesc));
+
         spHeart.addEventListener('click', e => {
             //console.log(e);
             if (e.target.textContent === EMPTY_HEART) {
@@ -301,9 +287,6 @@ function displayMealDesc(id, bFromFavorites) {
         liFavorite.append(spHeart);
         ulFavorite.append(liFavorite);
         ftFavorite.append(ulFavorite);
-        //pFavorite.textContent = 'Add to favorite: '
-        //pFavorite.append(spHeart);
-        //ftFavorite.append(pFavorite);
 
         const divMealDesc = document.getElementById('display-meal-desc');
         divMealDesc.innerHTML = '';
@@ -329,7 +312,7 @@ function addFavoriteMeal(objMealDesc) {
     .then(objMeal => {
         // console.log('POST: ', objMeal);
         arrFavoriteMeals.push(objMeal);
-        console.log('addFavoriteMeal', arrFavoriteMeals);
+        // console.log('addFavoriteMeal', arrFavoriteMeals);
         displayFavoriteMeals();
     })
     .catch(error => console.log(error));
@@ -352,7 +335,7 @@ function deleteFavoriteMeal(idMeal) {
                 break;
             }
         }
-        console.log('deleteFavoriteMeal', arrFavoriteMeals);
+        // console.log('deleteFavoriteMeal', arrFavoriteMeals);
         displayFavoriteMeals();
     })
     .catch(error => console.log(error));
@@ -373,7 +356,6 @@ function displayFavoriteMeals() {
     const ulMeals = document.getElementById('favorite-meals');
     ulMeals.innerHTML = '';
     arrFavoriteMeals.forEach((objMeal, i) => {
-        // the same with displaySearchedMeals()
         const imgMeal = document.createElement('img');
         imgMeal.src = objMeal.strMealThumb;
         imgMeal.alt = objMeal.strMeal;
