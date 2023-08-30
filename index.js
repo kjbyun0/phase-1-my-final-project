@@ -17,7 +17,7 @@ function fetchConditions() {
     fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list')
     .then(resp => resp.json())
     .then(mealCategory => {
-        //console.log(mealCategory.meals);
+        // console.log(mealCategory.meals);
         arrConditionDL[0] = mealCategory.meals.map(objCategory => objCategory.strCategory);
     });
 
@@ -25,7 +25,7 @@ function fetchConditions() {
     fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=list')
     .then(resp => resp.json())
     .then(area => {
-        //console.log(area.meals);
+        // console.log(area.meals);
         arrConditionDL[1] = area.meals.map(objArea => objArea.strArea);
     });
 
@@ -33,11 +33,11 @@ function fetchConditions() {
     fetch('https://www.themealdb.com/api/json/v1/1/list.php?i=list')
     .then(resp => resp.json())
     .then(ingredients => {
-        //console.log(ingredients.meals);
+        // console.log(ingredients.meals);
         arrConditionDL[2] = ingredients.meals.map(objIngredient => objIngredient.strIngredient);
     });
 
-    console.log('arrConditionDL', arrConditionDL);
+    // console.log('arrConditionDL', arrConditionDL);
 }
 
 function addConditionElement() {
@@ -263,7 +263,10 @@ function displayMealDesc(id, bFromFavorites) {
 
         ulMealDesc.append(liStrMeal, liCategory, liArea, liInstructions, liIngredients, ulIngredients);
 
-        const pFavorite = document.createElement('p');
+        const ftFavorite = document.createElement('footer');
+        const ulFavorite = document.createElement('ul');
+        const liFavorite = document.createElement('li');
+        //const pFavorite = document.createElement('p');
         const spHeart = document.createElement('span');
         //spHeart.classList.add('heart');
         spHeart.id = 'heart';
@@ -294,12 +297,17 @@ function displayMealDesc(id, bFromFavorites) {
                 deleteFavoriteMeal(objMealDesc.idMeal);
             }
         });
-        pFavorite.textContent = 'Add to favorite: '
-        pFavorite.append(spHeart);
+        liFavorite.innerHTML = 'Add to favorite: ';
+        liFavorite.append(spHeart);
+        ulFavorite.append(liFavorite);
+        ftFavorite.append(ulFavorite);
+        //pFavorite.textContent = 'Add to favorite: '
+        //pFavorite.append(spHeart);
+        //ftFavorite.append(pFavorite);
 
         const divMealDesc = document.getElementById('display-meal-desc');
         divMealDesc.innerHTML = '';
-        divMealDesc.append(imgMeal, ulMealDesc, pFavorite);
+        divMealDesc.append(imgMeal, ulMealDesc, ftFavorite);
     })
     .catch(error => console.log(error));
 }
@@ -349,19 +357,6 @@ function deleteFavoriteMeal(idMeal) {
     })
     .catch(error => console.log(error));
 }
-
-// function updateFavoriteMeals(e, objMealDesc) {
-//     console.log(e);
-//     if (e.target.textContent === EMPTY_HEART) {
-//         e.target.textContent = FULL_HEART;
-//         e.target.classList.toggle('activated-heart');
-//         addFavoriteMeal(objMealDesc);
-//     } else {
-//         e.target.textContent = EMPTY_HEART;
-//         e.target.classList.toggle('activated-heart');
-//         deleteFavoriteMeal(objMealDesc.idMeal);
-//     }
-// }
 
 function fetchFavoriteMeals() {
     fetch('http://localhost:3000/favoriteMeals')

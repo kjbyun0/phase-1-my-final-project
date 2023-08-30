@@ -46,6 +46,14 @@ ul {
     margin: 5px 0 5px;
 }
 
+footer {
+    background-color: rgb(230, 230, 230);
+}
+
+footer ul {
+    list-style-type: none;
+}
+
 .img-thumbnail {
     vertical-align: middle;
     margin: 0px 5px 2px 0px;
