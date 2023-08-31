@@ -16,7 +16,7 @@ This application consists of HTML, CSS, and JavaScript, and used TheMealDB publi
 - Open the `index.html` file on your browser
 
 ## Demo
-
+![](https://github.com/kjbyun0/phase-1-my-final-project/blob/main/ForREADME.gif)
 
 ## Credits
 All the meal data used in this application are from TheMealDB public API.
