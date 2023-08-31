@@ -2,11 +2,15 @@
 const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
-let condCnt = 0;    // Number of search elements added.
-const arrConditions = [];
-const arrSearchedMeals = [];    // Think about a way to delete it.
-const arrFavoriteMeals = [];    // Think about a way to delete it.
-const arrConditionDL = [];      // 0: Meal Category, 1: Area, 2: ingredients
+// Number of input elements to search meals
+let condCnt = 0;    
+
+// It is to store lists of options for input elements to search meals.
+// index 0: Meal Category, 1: Area, 2: ingredients
+const arrConditionDL = [];
+
+// It is to save list of favorite meals so that don't need to fetch every time this list is needed.
+const arrFavoriteMeals = [];
 
 fetchSearchConditions();
 addSearchElements();
@@ -15,16 +19,15 @@ fetchFavoriteMeals();
 document.getElementById('search-meals').addEventListener('submit', e => {
     e.preventDefault();
 
-    arrConditions.length = 0;
+    const arrSearchConditions = [];
     for (let i = 0; i < condCnt; i++) {
         const sltTag = document.getElementById(`select${i}`);
         const inputTag = document.getElementById(`input${i}`);
-        arrConditions.push({select: sltTag.value, input: inputTag.value});
+        arrSearchConditions.push({select: sltTag.value, input: inputTag.value});
     }
-    // console.log(arrConditions);
+    // console.log(arrSearchConditions);
 
-    arrSearchedMeals.length = 0;
-    searchMeals(arrConditions.length - 1);
+    searchMeals(arrSearchConditions, [], true);
 
     // initialzing search html elements
     document.getElementById('search-conditions').innerHTML = '';
@@ -109,38 +112,44 @@ function mkDataList(e) {
     const dlTag = document.getElementById(`datalist${condNum}`);
     //console.log('dlTag', dlTag);
     dlTag.innerHTML = '';
-    arrConditionDL[e.target.value - 2].forEach(elem => {
-        const opTag = document.createElement('option');
-        opTag.value = elem;
-        dlTag.appendChild(opTag);
-    });
+    const sltTagValue = e.target.value;
+    if (sltTagValue >= 2) {
+        arrConditionDL[e.target.value - 2].forEach(elem => {
+            const opTag = document.createElement('option');
+            opTag.value = elem;
+            dlTag.appendChild(opTag);
+        });
+    }
 }
 
-function searchMeals(idxConditions) {
-    // console.log('idxConditions', idxConditions);
-    if (idxConditions < 0) {
-        // console.log('arrSearchedMeals: ', arrSearchedMeals);
-        displaySearchedMeals();
+function searchMeals(arrSearchConditions, arrSearchedMeals, bFirst) {
+    if (arrSearchConditions.length <= 0) {
+        if (arrSearchedMeals.length === 0) {
+            alert("Can't find any matching result.");
+        } else {
+            displaySearchedMeals(arrSearchedMeals);
+        }
         return;
     } 
 
+    const objSearchCondition = arrSearchConditions.pop();
     let srchCond = '';
     let srchUrl = 'https://www.themealdb.com/api/json/v1/1/';
-    switch(arrConditions[idxConditions].select) {
+    switch(objSearchCondition.select) {
         case '1':
-            srchUrl = `${srchUrl}search.php?s=${arrConditions[idxConditions].input}`;
+            srchUrl = `${srchUrl}search.php?s=${objSearchCondition.input}`;
             srchCond = 'Name';
             break;
         case '2':
-            srchUrl = `${srchUrl}filter.php?c=${arrConditions[idxConditions].input}`;
+            srchUrl = `${srchUrl}filter.php?c=${objSearchCondition.input}`;
             srchCond = 'Meal Category';
             break;
         case '3':
-            srchUrl = `${srchUrl}filter.php?a=${arrConditions[idxConditions].input}`;
+            srchUrl = `${srchUrl}filter.php?a=${objSearchCondition.input}`;
             srchCond = 'Area';
             break;
         case '4':
-            srchUrl = `${srchUrl}filter.php?i=${arrConditions[idxConditions].input}`;
+            srchUrl = `${srchUrl}filter.php?i=${objSearchCondition.input}`;
             srchCond = 'Ingredient';
             break;
         default:
@@ -151,18 +160,20 @@ function searchMeals(idxConditions) {
     fetch(srchUrl)
     .then(resp => resp.json())
     .then(meals => {
-        // console.log(meals);
+        // console.log('meals.meals', meals.meals);
 
         if (meals.meals !== null) {
-            if (arrSearchedMeals.length === 0) {
+            if (bFirst) {
                 arrSearchedMeals.splice(0, 0, ...meals.meals);
             } else {
                 findIntersection(arrSearchedMeals, meals.meals);
             }
         } else {
-            alert(`"${srchCond}": "${arrConditions[idxConditions].input}" is not valid!`)
+            alert(`"${srchCond}": "${objSearchCondition.input}" is not valid!`)
         }
-        searchMeals(idxConditions-1);
+        // console.log(arrSearchedMeals);
+
+        searchMeals(arrSearchConditions, arrSearchedMeals, false);
     })
     .catch(error => console.log(error));
 }
@@ -170,8 +181,6 @@ function searchMeals(idxConditions) {
 function findIntersection(arr1, arr2) {
     let arrIds1 = arr1.map(elem => elem.idMeal);
     let arrIds2 = arr2.map(elem => elem.idMeal);
-    // console.log('arrIds1: ', arrIds1);
-    // console.log('arrIds2: ', arrIds2);
     
     let arrIdsIter, arrIdsSet, arrIter;
     if (arrIds1.length <= arrIds2.length) {
@@ -186,11 +195,13 @@ function findIntersection(arr1, arr2) {
 
     const arrIdsIntersection = arrIdsIter.filter(id => arrIdsSet.has(id));
     // console.log('arrIdsIntersection', arrIdsIntersection)
+
     const arrRes = arrIdsIntersection.map(id => arrIter.find(obj => obj.idMeal === id));
-    arrSearchedMeals.splice(0, arrSearchedMeals.length, ...arrRes);
+    // console.log('arrRes', arrRes);
+    arr1.splice(0, arr1.length, ...arrRes);
 }
 
-function displaySearchedMeals() {
+function displaySearchedMeals(arrSearchedMeals) {
     const ulMeals = document.getElementById('searched-meal-list');
     ulMeals.innerHTML = '';
     arrSearchedMeals.forEach(objMeal => {
