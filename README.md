@@ -18,5 +18,7 @@ This application consists of HTML, CSS, and JavaScript, and used TheMealDB publi
 ## Demo
 ![](https://github.com/kjbyun0/phase-1-my-final-project/blob/main/ForREADME.gif)
 
+Video Walkthrough: [https://youtu.be/wg1q74aP5uM](https://youtu.be/wg1q74aP5uM)
+
 ## Credits
 All the meal data used in this application are from TheMealDB public API.
