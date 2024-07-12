@@ -13,7 +13,7 @@ This application consists of HTML, CSS, and JavaScript, and used TheMealDB publi
 
 ## Installation
 - Run `json-server --watch db.json` to fetch the favorite meals
-- Open the `index.html` file on your browser
+- Run `explorer.exe index.html` to open the index.html file on your browser
 
 ## Demo
 ![](https://github.com/kjbyun0/phase-1-my-final-project/blob/main/ForREADME.gif)
